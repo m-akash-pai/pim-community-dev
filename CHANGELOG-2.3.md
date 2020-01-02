@@ -1,10 +1,14 @@
 # 2.3.x
 
+## Bug fixes
+
+- PIM-7699: Fix multi-select filter design with a lot of filtered items
+
 # 2.3.75 (2020-01-03)
 
 ## Bug fixes
 
-- PIM-7699: Fix multi-select filter design with a lot of filtered items
+PIM-6386: Add exception when trying to update the same product value on the "a_metric" attribute twice, with the same scope and locale
 
 ## Technical improvement
 
