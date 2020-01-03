@@ -2,13 +2,13 @@
 
 ## Bug fixes
 
-- PIM-7699: Fix multi-select filter design with a lot of filtered items
+- PIM-6386: Add exception when trying to update the same product value on an attribute twice, with the same scope and locale
 
 # 2.3.75 (2020-01-03)
 
 ## Bug fixes
 
-PIM-6386: Add exception when trying to update the same product value on an attribute twice, with the same scope and locale
+- PIM-7699: Fix multi-select filter design with a lot of filtered items
 
 ## Technical improvement
 
