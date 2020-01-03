@@ -8,7 +8,7 @@
 
 ## Bug fixes
 
-PIM-6386: Add exception when trying to update the same product value on the "a_metric" attribute twice, with the same scope and locale
+PIM-6386: Add exception when trying to update the same product value on an attribute twice, with the same scope and locale
 
 ## Technical improvement
 
