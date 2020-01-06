@@ -22,6 +22,24 @@ jobs:
           name: Restore cache - vendor
           keys:
             - vendor-{{ .Environment.CACHE_VERSION }}-{{ checksum "composer.lock" }}
+      - restore_cache:
+          name: Restore cache - Mysql docker image
+          keys:
+            - mysql-image-{{ .Environment.CACHE_VERSION }}-{{ checksum "docker-compose.yml" }}
+      - restore_cache:
+          name: Restore cache - Elasticsearch docker image
+          keys:
+            - elasticsearch-image-{{ .Environment.CACHE_VERSION }}-{{ checksum "docker-compose.yml" }}
+      - restore_cache:
+          name: Restore cache - Node docker image
+          keys:
+            - node-image-{{ .Environment.CACHE_VERSION }}-{{ checksum "docker-compose.yml" }}
+      - run:
+            name: Load docker images from cache
+            command: |
+                test -e /tmp/mysql-image.tar && docker load -i /tmp/mysql-image.tar || true
+                test -e /tmp/elasticsearch-image.tar && docker load -i /tmp/elasticsearch-image.tar || true
+                test -e /tmp/node-image.tar && docker load -i /tmp/node-image.tar || true
       - run:
           name: Change owner on project dir after restoring cache
           command: |
@@ -48,6 +66,12 @@ jobs:
       - run:
             name: Change owner on project dir after install
             command: sudo chmod -R 777 ../project
+      - run:
+            name: Save docker images as archive
+            command: |
+                test -e /tmp/mysql-image.tar || docker save -o /tmp/mysql-image.tar mysql:8.0.18
+                test -e /tmp/elasticsearch-image.tar || docker save -o /tmp/elasticsearch-image.tar docker.elastic.co/elasticsearch/elasticsearch-oss:7.5.1
+                test -e /tmp/node-image.tar || docker save -o /tmp/node-image.tar akeneo/node:10
       - save_cache:
           paths:
             - ./node_modules
@@ -56,6 +80,18 @@ jobs:
           paths:
             - ./vendor
           key: vendor-{{ .Environment.CACHE_VERSION }}-{{ checksum "composer.lock" }}
+      - save_cache:
+            paths:
+                - /tmp/mysql-image.tar
+            key: mysql-image-{{ .Environment.CACHE_VERSION }}-{{ checksum "docker-compose.yml" }}
+      - save_cache:
+            paths:
+                - /tmp/elasticsearch-image.tar
+            key: elasticsearch-image-{{ .Environment.CACHE_VERSION }}-{{ checksum "docker-compose.yml" }}
+      - save_cache:
+            paths:
+                - /tmp/node-image.tar
+            key: node-image-{{ .Environment.CACHE_VERSION }}-{{ checksum "docker-compose.yml" }}
       - persist_to_workspace:
           root: ~/
           paths:
