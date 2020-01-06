@@ -26,10 +26,12 @@ class DbalSelectConnectionWithCredentialsByCodeQuery implements SelectConnection
     public function execute(string $code): ?ConnectionWithCredentials
     {
         $selectSQL = <<<SQL
-SELECT conn.code, conn.label, conn.flow_type, conn.image, conn.client_id, client.random_id, client.secret, u.username
-FROM akeneo_connectivity_connection conn
-INNER JOIN pim_api_client client on conn.client_id = client.id
-INNER JOIN oro_user u on conn.user_id = u.id
+SELECT c.code, c.label, c.flow_type, c.image, c.client_id, client.random_id, client.secret, u.username, urole.role_id, ugroup.group_id
+FROM akeneo_connectivity_connection c
+INNER JOIN pim_api_client client on c.client_id = client.id
+INNER JOIN oro_user u on c.user_id = u.id
+INNER JOIN oro_user_access_role urole on u.id = urole.user_id
+INNER JOIN oro_user_access_group ugroup on u.id = ugroup.user_id
 WHERE code = :code
 SQL;
         $dataRow = $this->dbalConnection->executeQuery($selectSQL, ['code' => $code])->fetch();
@@ -41,11 +43,13 @@ SQL;
             $dataRow['code'],
             $dataRow['label'],
             $dataRow['flow_type'],
-            $dataRow['client_id'] .'_'. $dataRow['random_id'],
+            $dataRow['client_id'].'_'.$dataRow['random_id'],
             $dataRow['secret'],
             $dataRow['username'],
             null,
             $dataRow['image'],
+            $dataRow['role_id'],
+            $dataRow['group_id'],
         );
     }
 }

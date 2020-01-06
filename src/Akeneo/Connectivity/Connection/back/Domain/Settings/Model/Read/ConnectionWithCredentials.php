@@ -35,6 +35,12 @@ class ConnectionWithCredentials
     /** @var string|null */
     private $image;
 
+    /** @var string */
+    private $userRoleId;
+
+    /** @var string */
+    private $userGroupId;
+
     public function __construct(
         string $code,
         string $label,
@@ -42,8 +48,11 @@ class ConnectionWithCredentials
         string $clientId,
         string $secret,
         string $username,
-        ?string $password = null,
-        ?string $image = null
+        ?string $password,
+        ?string $image,
+        string $userRole,
+        string $userGroup
+
     ) {
         $this->code = $code;
         $this->label = $label;
@@ -53,6 +62,8 @@ class ConnectionWithCredentials
         $this->image = $image;
         $this->username = $username;
         $this->password = $password;
+        $this->userRoleId = $userRole;
+        $this->userGroupId = $userGroup;
     }
 
     public function code(): string
@@ -90,9 +101,24 @@ class ConnectionWithCredentials
         return $this->password;
     }
 
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
+    }
+
     public function image(): ?string
     {
         return $this->image;
+    }
+
+    public function userRoleId(): string
+    {
+        return $this->userRoleId;
+    }
+
+    public function userGroupId(): string
+    {
+        return $this->userGroupId;
     }
 
     public function normalize(): array
@@ -106,6 +132,8 @@ class ConnectionWithCredentials
             'secret' => $this->secret,
             'username' => $this->username,
             'password' => $this->password,
+            'user_role_id' => $this->userRoleId,
+            'user_group_id' => $this->userGroupId,
         ];
     }
 }

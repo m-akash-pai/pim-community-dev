@@ -4,7 +4,7 @@ import {ApplyButton, Form, FormGroup, FormInput} from '../../common';
 import {isErr, isOk} from '../../shared/fetch-result/result';
 import {sanitize} from '../../shared/sanitize';
 import {Translate} from '../../shared/translate';
-import {connectionWithCredentialsFetched} from '../actions/connections-actions';
+import {connectionFetched} from '../actions/connections-actions';
 import {
     codeGenerated,
     CreateFormAction,
@@ -115,10 +115,12 @@ export const ConnectionCreateForm = () => {
         }
         if (isOk(result)) {
             connectionsDispatch(
-                connectionWithCredentialsFetched({
+                connectionFetched({
                     ...result.value,
                     flowType: result.value.flow_type,
                     clientId: result.value.client_id,
+                    userRoleId: result.value.user_role_id,
+                    userGroupId: result.value.user_group_id,
                 })
             );
         }

@@ -48,6 +48,8 @@ class UpdateConnectionHandler
         $connection->setFlowType(new FlowType($command->flowType()));
         $connection->setImage(null !== $command->image() ? new ConnectionImage($command->image()) : null);
 
+        // update permissions
+
         $this->repository->update($connection);
     }
 }

@@ -2,8 +2,6 @@ import {Formik, FormikHelpers, useFormikContext} from 'formik';
 import React, {useEffect} from 'react';
 import {useHistory, useParams} from 'react-router';
 import styled from 'styled-components';
-import {FlowType} from '../../model/flow-type.enum';
-import {PimView} from '../../infrastructure/pim-view/PimView';
 import {
     ApplyButton,
     Breadcrumb,
@@ -14,17 +12,20 @@ import {
     SecondaryActionsDropdownButton,
 } from '../../common';
 import defaultImageUrl from '../../common/assets/illustrations/api.svg';
+import {PimView} from '../../infrastructure/pim-view/PimView';
+import {Connection} from '../../model/connection';
+import {FlowType} from '../../model/flow-type.enum';
 import {fetchResult} from '../../shared/fetch-result';
-import {isOk, isErr} from '../../shared/fetch-result/result';
+import {isErr, isOk} from '../../shared/fetch-result/result';
 import {BreadcrumbRouterLink, useRoute} from '../../shared/router';
 import {Translate} from '../../shared/translate';
-import {connectionUpdated, connectionWithCredentialsFetched} from '../actions/connections-actions';
+import {connectionUpdated, connectionFetched} from '../actions/connections-actions';
 import {useUpdateConnection} from '../api-hooks/use-update-connection';
-import {useConnectionsState, useConnectionsDispatch} from '../connections-context';
 import {ConnectionCredentials} from '../components/ConnectionCredentials';
 import {ConnectionEditForm} from '../components/ConnectionEditForm';
+import {ConnectionPermissions} from '../components/permissions/ConnectionPermissions';
+import {useConnectionsDispatch, useConnectionsState} from '../connections-context';
 import {useMediaUrlGenerator} from '../use-media-url-generator';
-import {Connection} from '../../model/connection';
 
 type ResultValues = {
     code: string;
@@ -35,6 +36,8 @@ type ResultValues = {
     client_id: string;
     username: string;
     password: string;
+    user_role_id: string;
+    user_group_id: string;
 };
 
 export type FormValues = {
@@ -77,10 +80,12 @@ export const EditConnection = () => {
             }
 
             dispatch(
-                connectionWithCredentialsFetched({
+                connectionFetched({
                     ...result.value,
                     flowType: result.value.flow_type,
                     clientId: result.value.client_id,
+                    userRoleId: result.value.user_role_id,
+                    userGroupId: result.value.user_group_id,
                 })
             );
         });
@@ -133,6 +138,13 @@ export const EditConnection = () => {
                                 code={connection.code}
                                 label={connection.label}
                                 credentials={connection}
+                            />
+                            <br />
+                            <ConnectionPermissions
+                                code={connection.code}
+                                label={connection.label}
+                                userRoleId={connection.userRoleId}
+                                userGroupId={connection.userGroupId}
                             />
                         </div>
                     </Layout>

@@ -22,6 +22,8 @@ interface ResultValue {
     secret: string;
     username: string;
     password: string;
+    user_role_id: string;
+    user_group_id: string;
 }
 
 interface ResultError {
